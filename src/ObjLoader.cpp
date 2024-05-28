@@ -4,6 +4,8 @@
 
 Mesh ObjLoader::loadMesh(const char* path)
 {
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
     tinyobj::attrib_t attribs;
     std::vector<tinyobj::shape_t> shapes;    
     std::vector<tinyobj::material_t> materials;

@@ -121,8 +121,6 @@ void Skybox::Render(glm::mat4 view, glm::mat4 proj)
     glBindVertexArray(0);
     shader.Unbind();
     glDepthFunc(GL_LESS);
-    glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
 }
     
 void Skybox::Cleanup()

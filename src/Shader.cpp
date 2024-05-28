@@ -32,6 +32,8 @@ void Shader::Gen()
 {
     const char* vSrc = vertSrc.c_str();
     const char* fSrc = fragSrc.c_str();
+    // std::cout << vSrc << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+    // std::cout << fSrc << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 
     int success;
     GLchar log[512];
@@ -79,26 +81,31 @@ void Shader::Unbind()
 
 void Shader::PutMat4(glm::mat4 mat, const char *name)
 {
+    this->Bind();
     glUniformMatrix4fv(glGetUniformLocation(ID, name), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 void Shader::PutTex(int slot, const char *name)
 {
+    this->Bind();
     glUniform1i(glGetUniformLocation(ID, name), slot);
 }
 
 void Shader::PutInt(int val, const char *name)
 {
+    this->Bind();
     glUniform1i(glGetUniformLocation(ID, name), val);
 }
 
 void Shader::PutFloat(float val, const char *name)
 {
+    this->Bind();
     glUniform1f(glGetUniformLocation(ID, name), val);
 }
 
 void Shader::PutVec3(glm::vec3 vec, const char *name)
 {
+    this->Bind();
     glUniform3f(glGetUniformLocation(ID, name), vec.x, vec.y, vec.z);
 }
 
