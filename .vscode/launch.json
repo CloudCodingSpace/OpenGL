@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "type": "cppdbg",
+            "externalConsole": true,
+            "program": "${workspaceRoot}/opengl.exe",
+            "name": "Launch",
+            "request": "launch"
+        }
+    ]
+}

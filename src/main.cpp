@@ -1,12 +1,9 @@
-#include "Window.hpp"
-#include "Shader.hpp"
-#include "Mesh.hpp"
-#include "Texture.hpp"
-#include "TexturedMesh.hpp"
-#include "ObjLoader.hpp"
-#include "Camera.hpp"
-#include "Skybox.hpp"
-#include "ImGuiLayer.hpp"
+#include "window/Window.hpp"
+#include "shaders/Shader.hpp"
+#include "mesh/TexturedMesh.hpp"
+#include "mesh/ObjLoader.hpp"
+#include "camera/Camera.hpp"
+#include "gui/ImGuiLayer.hpp"
 
 int main()
 {
@@ -22,17 +19,14 @@ int main()
 	// Creating required objects
 	Window window(800, 600, "OpenGL!");
 	Shader shader("./shaders/default.vert", "./shaders/default.frag");
-	Mesh mesh = ObjLoader::loadMesh("./assets/objs/Cube.obj");
-	Texture texture("./assets/textures/white.jpg", 1);
+	Mesh mesh = ObjLoader::loadMesh("./assets/objs/BossDragon.obj");
+	Texture texture("./assets/textures/BossDragon.png", 1);
 	TexturedMesh texturedMesh(mesh, texture, shader);
 	Camera camera(glm::vec3(0, 10, -10), window.window);
 	ImGuiLayer gui(window.window);
-	Skybox skybox(filePaths);
-
-	glm::mat4 model(1.0f);
-	glm::mat4 proj(1.0f);
 
 	//Main loop
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glfwShowWindow(window.window);
 	while (!glfwWindowShouldClose(window.window))
@@ -49,30 +43,10 @@ int main()
 			ImGui::Begin("Debug");
 			ImGui::Text("Yay!");
 			ImGui::End();
-
-
-			if(ImGui::BeginMainMenuBar())
-			{
-				if(ImGui::BeginMenu("File"))
-				{
-					ImGui::MenuItem("New", "Ctrl + N");
-					ImGui::EndMenu();
-				}
-
-				ImGui::EndMainMenuBar();
-			}
 		});
 
 		// Rendering the model
-		proj = glm::mat4(1.0f);
-		proj = glm::perspective(glm::radians(90.0f), 800.0f/600.0f, 0.1f, 1000.0f);
-		model = glm::mat4(1.0f);
-
-		camera.Input();
-		
-		shader.PutMat4(proj, "proj");
-		shader.PutMat4(model, "model");
-		camera.PutMatrices(shader);
+		camera.Update(shader);
 
 		shader.PutVec3(glm::vec3(0.0f, 100.0f, -100.0f), "lightPos");
 		shader.PutVec3(glm::vec3(1, 1, 1), "lightColor");
@@ -80,8 +54,6 @@ int main()
 		shader.PutFloat(128, "shininess");
 
 		texturedMesh.Render();
-
-		skybox.Render(camera.GetViewMat(), proj);
 		
 		gui.SendRenderData();
 
@@ -90,7 +62,6 @@ int main()
 	}
 
 	//Cleaning up resources
-	skybox.Cleanup();
 	window.Cleanup();
 	gui.Cleanup();
 	texturedMesh.Cleanup();
