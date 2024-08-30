@@ -4,12 +4,12 @@ layout (location = 0) in vec3 aPos;
 
 out vec3 coords;
 
-uniform mat4 view;
-uniform mat4 proj;
+uniform vec3 front;
+uniform vec3 right;
+uniform vec3 up;
 
 void main(void)
 {
-    coords = aPos;
-    vec4 pos = proj * view * vec4(aPos, 0.0);
-    gl_Position  = pos.xyww;
+    gl_Position = vec4(aPos, 1.0);
+    coords = normalize(front + right * aPos.x + up * aPos.y);
 }

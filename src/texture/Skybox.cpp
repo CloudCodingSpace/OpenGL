@@ -8,37 +8,16 @@ Skybox::Skybox(std::vector<std::string> filePaths)
     // Creating the skybox mesh aka the cube
     float vertices[] =
     {
-        //   Coordinates
-        -1.0f, -1.0f,  1.0f,//        7--------6
-        1.0f, -1.0f,  1.0f,//       /|       /|
-        1.0f, -1.0f, -1.0f,//      4--------5 |
-        -1.0f, -1.0f, -1.0f,//      | |      | |
-        -1.0f,  1.0f,  1.0f,//      | 3------|-2
-        1.0f,  1.0f,  1.0f,//      |/       |/
-        1.0f,  1.0f, -1.0f,//      0--------1
-        -1.0f,  1.0f, -1.0f
+        -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f,
+         1.0f, -1.0f, 0.0f
     };
 
     unsigned int indices[] =
     {
-        // Right
-        1, 2, 6,
-        6, 5, 1,
-        // Left
-        0, 4, 7,
-        7, 3, 0,
-        // Top
-        4, 5, 6,
-        6, 7, 4,
-        // Bottom
-        0, 3, 2,
-        2, 1, 0,
-        // Back
-        0, 1, 5,
-        5, 4, 0,
-        // Front
-        3, 7, 6,
-        6, 2, 3
+        0, 1, 2,
+        1, 3, 2
     };
 
     glGenVertexArrays(1, &vaoID);
@@ -55,8 +34,6 @@ Skybox::Skybox(std::vector<std::string> filePaths)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
     //Creating the skybox texture
@@ -98,29 +75,21 @@ Skybox::Skybox(std::vector<std::string> filePaths)
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
-void Skybox::Render(glm::mat4 view, glm::mat4 proj)
+void Skybox::Render(Camera& camera)
 {
-    glDisable(GL_CULL_FACE);
-    glDepthFunc(GL_LEQUAL);
     shader.Bind();
-
-    shader.PutMat4(view, "view");
-    shader.PutMat4(proj, "proj");
+    shader.PutVec3(camera.GetFront(), "front");
+    shader.PutVec3(camera.GetUp(), "up");
+    shader.PutVec3(camera.GetRight(), "right");
     
     glBindVertexArray(vaoID);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-    glBindVertexArray(0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     shader.Unbind();
-    glDepthFunc(GL_LESS);
 }
     
 void Skybox::Cleanup()

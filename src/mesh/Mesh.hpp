@@ -7,6 +7,7 @@
 class Mesh
 {
 public:
+    Mesh() = default;
     Mesh(GLfloat* vertices, GLfloat* coord, GLfloat* normals, GLsizeiptr vertSize, GLsizeiptr coordSize, GLsizeiptr normSize, GLuint count);
     void Render();
     void Cleanup();

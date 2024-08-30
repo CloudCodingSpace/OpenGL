@@ -2,6 +2,7 @@
 #define SKYBOX_CLASS_HPP
 
 #include "../shaders/Shader.hpp"
+#include "../camera/Camera.hpp"
 
 #include <vector>
 #include <glad/glad.h>
@@ -13,7 +14,7 @@ class Skybox
 {
 public:
     Skybox(std::vector<std::string> filePaths);
-    void Render(glm::mat4 view, glm::mat4 proj);
+    void Render(Camera& camera);
     void Cleanup();
 
     Shader shader;
